@@ -41,6 +41,7 @@ export default class VideoBox extends HTMLElement {
         console.info('Initialize RTC Video'); // eslint-disable-line no-console
 
         video.setAttribute('loop', '');
+        video.muted = true;
         video.setAttribute('autoplay', 'true');
         // video.setAttribute('controls', '');
 

@@ -143,6 +143,7 @@ var VideoBox = function (_HTMLElement) {
             console.info('Initialize RTC Video'); // eslint-disable-line no-console
 
             video.setAttribute('loop', '');
+            video.muted = true;
             video.setAttribute('autoplay', 'true');
             // video.setAttribute('controls', '');
 
