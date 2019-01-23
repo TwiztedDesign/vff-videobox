@@ -200,7 +200,7 @@ export default class VideoBox extends HTMLElement {
         return this.getAttribute("signaling-server") || "";
     }
     set src(value) {
-        if(self.isURL(value)){//In case it's a full URL https://www.google.com/**/**
+        if(this.isURL(value)){//In case it's a full URL https://www.google.com/**/**
             let url = new URL(value);
             this.setAttribute('src', url.pathname);
             this.setAttribute('signaling-server', url.origin);
