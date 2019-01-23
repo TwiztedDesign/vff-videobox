@@ -121,6 +121,15 @@ export default class VideoBox extends HTMLElement {
     }
 
 
+    isURL(str){
+        let pattern = new RegExp('^(https?:\\/\\/)?'+ // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|'+ // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+            '(\\#[-a-z\\d_]*)?$','i'); // fragment locator
+        return pattern.test(str);
+    }
 
     initStream(url) {
         let self = this;
@@ -187,14 +196,23 @@ export default class VideoBox extends HTMLElement {
     get src() {
         return this.getAttribute("src") || "";
     }
+    get signalingServer() {
+        return this.getAttribute("signaling-server") || "";
+    }
     set src(value) {
-        this.setAttribute('src', value);
-        if(value &&
+        if(self.isURL(value)){//In case it's a full URL https://www.google.com/**/**
+            let url = new URL(value);
+            this.setAttribute('src', url.pathname);
+            this.setAttribute('signaling-server', url.origin);
+        }else {//In case it's a string from the type /**/**
+            this.setAttribute('src', value);
+        }
+        if (value &&
             // value !== this._src &&
-            (this.controllerPreview || window.vff.mode !== 'controller-preview')){
-                clearInterval(this.canvasDrawTimeout);
-                this._src = value;
-                this.initStream(value);
+            (this.controllerPreview || window.vff.mode !== 'controller-preview')) {
+            clearInterval(this.canvasDrawTimeout);
+            this._src = value;
+            this.initStream(value);
         }
     }
 
