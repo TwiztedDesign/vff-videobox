@@ -223,6 +223,17 @@ var VideoBox = function (_HTMLElement) {
             return this.offsetParent !== null;
         }
     }, {
+        key: 'isURL',
+        value: function isURL(str) {
+            var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+            return pattern.test(str);
+        }
+    }, {
         key: 'initStream',
         value: function initStream(url) {
             var self = this;
@@ -302,7 +313,15 @@ var VideoBox = function (_HTMLElement) {
             return this.getAttribute("src") || "";
         },
         set: function set(value) {
-            this.setAttribute('src', value);
+            if (this.isURL(value)) {
+                //In case it's a full URL https://www.google.com/**/**
+                var url = new URL(value);
+                this.setAttribute('src', url.pathname);
+                this.setAttribute('signaling-server', url.origin);
+            } else {
+                //In case it's a string from the type /**/**
+                this.setAttribute('src', value);
+            }
             if (value && (
             // value !== this._src &&
             this.controllerPreview || window.vff.mode !== 'controller-preview')) {
@@ -310,6 +329,11 @@ var VideoBox = function (_HTMLElement) {
                 this._src = value;
                 this.initStream(value);
             }
+        }
+    }, {
+        key: 'signalingServer',
+        get: function get() {
+            return this.getAttribute("signaling-server") || "";
         }
     }], [{
         key: 'observedAttributes',
