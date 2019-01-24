@@ -110,6 +110,7 @@ var VideoBox = function (_HTMLElement) {
         var _this = _possibleConstructorReturn(this, (VideoBox.__proto__ || Object.getPrototypeOf(VideoBox)).call(this));
 
         _this._src = '';
+        _this._reconnectInterval = 3000;
         return _this;
     }
 
@@ -234,6 +235,25 @@ var VideoBox = function (_HTMLElement) {
             return pattern.test(str);
         }
     }, {
+        key: 'reconnect',
+        value: function reconnect() {
+            this.initStream(this.src);
+        }
+    }, {
+        key: 'startReconnectionInterval',
+        value: function startReconnectionInterval() {
+            var _this2 = this;
+
+            this._reconnectTimeout = setTimeout(function () {
+                _this2.reconnect();
+            }, this._reconnectInterval);
+        }
+    }, {
+        key: 'stopReconnectionInterval',
+        value: function stopReconnectionInterval() {
+            clearTimeout(this._reconnectTimeout);
+        }
+    }, {
         key: 'initStream',
         value: function initStream(url) {
             var self = this;
@@ -272,24 +292,37 @@ var VideoBox = function (_HTMLElement) {
 
             // when it's ready, join if we got a room from the URL
             self.webrtc.on('readyToCall', function () {
-                self.webrtc.setInfo('', self.webrtc.connection.connection.id, ''); // Store strongId
+                self.webrtc.setInfo('videobox', self.webrtc.connection.connection.id, ''); // Store strongId
 
                 if (room) {
                     self.webrtc.joinRoom(room);
                 }
             });
+            self.webrtc.on('joinedRoom', function (room) {
+                self.startReconnectionInterval();
+                window.console.log('WebRTC - Joined Room: ' + room);
+            });
+            self.webrtc.on('createdPeer', function (peer) {
+                // window.console.log('WebRTC - Peer Created');
+            });
+
+            self.webrtc.on('channelMessage', function (peer, label, data) {
+                // window.console.log('WebRTC - Channel message');
+            });
 
             //Handle incoming video from target peer
-            console.log('Adding RTC video handler'); // eslint-disable-line no-console
+            // window.console.log('Adding RTC video handler'); // eslint-disable-line no-console
             self.webrtc.on('videoAdded', function (video, peer) {
-                console.log('videobox - video added'); // eslint-disable-line no-console
+                // window.console.log('videobox - video added');  // eslint-disable-line no-console
                 self.initVideo(video, peer);
+                self.stopReconnectionInterval();
             });
 
             //Handle removing video by target peer
             self.webrtc.on('videoRemoved', function (video, peer) {
-                console.log('videobox - video removed'); // eslint-disable-line no-console
+                window.console.log('videobox - video removed'); // eslint-disable-line no-console
                 self.clearVideo(video, peer);
+                self.startReconnectionInterval();
             });
         }
     }, {
