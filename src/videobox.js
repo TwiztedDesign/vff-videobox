@@ -178,13 +178,13 @@ export default class VideoBox extends HTMLElement {
         //Handle incoming video from target peer
         console.log('Adding RTC video handler'); // eslint-disable-line no-console
         self.webrtc.on('videoAdded', function (video, peer) {
-            console.log('videobox - video added');
+            console.log('videobox - video added');  // eslint-disable-line no-console
             self.initVideo(video, peer);
         });
 
         //Handle removing video by target peer
         self.webrtc.on('videoRemoved', function (video, peer) {
-            console.log('videobox - video removed');
+            console.log('videobox - video removed');  // eslint-disable-line no-console
             self.clearVideo(video, peer);
 
         });
@@ -206,7 +206,6 @@ export default class VideoBox extends HTMLElement {
         return this.setAttribute("signaling-server", value);
     }
     set src(value) {
-
         if(this.isURL(value)){
             let parts = value.split("/");
             let server = parts.slice(0,parts.length-2).join('/');

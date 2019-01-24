@@ -282,13 +282,13 @@ var VideoBox = function (_HTMLElement) {
             //Handle incoming video from target peer
             console.log('Adding RTC video handler'); // eslint-disable-line no-console
             self.webrtc.on('videoAdded', function (video, peer) {
-                console.log('videobox - video added');
+                console.log('videobox - video added'); // eslint-disable-line no-console
                 self.initVideo(video, peer);
             });
 
             //Handle removing video by target peer
             self.webrtc.on('videoRemoved', function (video, peer) {
-                console.log('videobox - video removed');
+                console.log('videobox - video removed'); // eslint-disable-line no-console
                 self.clearVideo(video, peer);
             });
         }
@@ -315,14 +315,6 @@ var VideoBox = function (_HTMLElement) {
             return this.getAttribute("src") || "";
         },
         set: function set(value) {
-            // if(this.isURL(value)){//In case it's a full URL https://www.google.com/**/**
-            //     let url = new URL(value);
-            //     this.setAttribute('src', url.pathname);
-            //     this.setAttribute('signaling-server', url.origin);
-            // }else {//In case it's a string from the type /**/**
-            //     this.setAttribute('src', value);
-            // }
-
             if (this.isURL(value)) {
                 var parts = value.split("/");
                 var server = parts.slice(0, parts.length - 2).join('/');
