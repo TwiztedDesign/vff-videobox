@@ -178,12 +178,15 @@ export default class VideoBox extends HTMLElement {
         //Handle incoming video from target peer
         console.log('Adding RTC video handler'); // eslint-disable-line no-console
         self.webrtc.on('videoAdded', function (video, peer) {
+            console.log('videobox - video added');
             self.initVideo(video, peer);
         });
 
         //Handle removing video by target peer
         self.webrtc.on('videoRemoved', function (video, peer) {
+            console.log('videobox - video removed');
             self.clearVideo(video, peer);
+
         });
     }
 
@@ -199,14 +202,26 @@ export default class VideoBox extends HTMLElement {
     get signalingServer() {
         return this.getAttribute("signaling-server") || "";
     }
+    set signalingServer(value) {
+        return this.setAttribute("signaling-server", value);
+    }
     set src(value) {
-        if(this.isURL(value)){//In case it's a full URL https://www.google.com/**/**
-            let url = new URL(value);
-            this.setAttribute('src', url.pathname);
-            this.setAttribute('signaling-server', url.origin);
-        }else {//In case it's a string from the type /**/**
-            this.setAttribute('src', value);
+        // if(this.isURL(value)){//In case it's a full URL https://www.google.com/**/**
+        //     let url = new URL(value);
+        //     this.setAttribute('src', url.pathname);
+        //     this.setAttribute('signaling-server', url.origin);
+        // }else {//In case it's a string from the type /**/**
+        //     this.setAttribute('src', value);
+        // }
+
+        if(this.isURL(value)){
+            let parts = value.split("/");
+            let server = parts.slice(0,parts.length-2).join('/');
+            this.signalingServer = server;
+            value = parts.slice(parts.length-2).join('/');
         }
+        this.setAttribute('src', value);
+
         if (value &&
             // value !== this._src &&
             (this.controllerPreview || window.vff.mode !== 'controller-preview')) {

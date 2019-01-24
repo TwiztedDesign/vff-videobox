@@ -282,11 +282,13 @@ var VideoBox = function (_HTMLElement) {
             //Handle incoming video from target peer
             console.log('Adding RTC video handler'); // eslint-disable-line no-console
             self.webrtc.on('videoAdded', function (video, peer) {
+                console.log('videobox - video added');
                 self.initVideo(video, peer);
             });
 
             //Handle removing video by target peer
             self.webrtc.on('videoRemoved', function (video, peer) {
+                console.log('videobox - video removed');
                 self.clearVideo(video, peer);
             });
         }
@@ -313,15 +315,22 @@ var VideoBox = function (_HTMLElement) {
             return this.getAttribute("src") || "";
         },
         set: function set(value) {
+            // if(this.isURL(value)){//In case it's a full URL https://www.google.com/**/**
+            //     let url = new URL(value);
+            //     this.setAttribute('src', url.pathname);
+            //     this.setAttribute('signaling-server', url.origin);
+            // }else {//In case it's a string from the type /**/**
+            //     this.setAttribute('src', value);
+            // }
+
             if (this.isURL(value)) {
-                //In case it's a full URL https://www.google.com/**/**
-                var url = new URL(value);
-                this.setAttribute('src', url.pathname);
-                this.setAttribute('signaling-server', url.origin);
-            } else {
-                //In case it's a string from the type /**/**
-                this.setAttribute('src', value);
+                var parts = value.split("/");
+                var server = parts.slice(0, parts.length - 2).join('/');
+                this.signalingServer = server;
+                value = parts.slice(parts.length - 2).join('/');
             }
+            this.setAttribute('src', value);
+
             if (value && (
             // value !== this._src &&
             this.controllerPreview || window.vff.mode !== 'controller-preview')) {
@@ -334,6 +343,9 @@ var VideoBox = function (_HTMLElement) {
         key: 'signalingServer',
         get: function get() {
             return this.getAttribute("signaling-server") || "";
+        },
+        set: function set(value) {
+            return this.setAttribute("signaling-server", value);
         }
     }], [{
         key: 'observedAttributes',
