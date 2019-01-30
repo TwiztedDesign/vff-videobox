@@ -15,8 +15,6 @@ export default class VideoBox extends HTMLElement {
 
         this.innerHTML = html;
         this.controllerPreview = false;
-        this.useCanvas = false;
-
 
         if(this.src && (this.controllerPreview || window.vff.mode !== 'controller-preview')){
             this.initStream(this.src);
@@ -189,11 +187,11 @@ export default class VideoBox extends HTMLElement {
             self.startReconnectionInterval();
             window.console.log('WebRTC - Joined Room: ' + room);
         });
-        self.webrtc.on('createdPeer', (peer) => {
+        self.webrtc.on('createdPeer', (/*peer*/) => {
             // window.console.log('WebRTC - Peer Created');
         });
 
-        self.webrtc.on('channelMessage', (peer, label, data) => {
+        self.webrtc.on('channelMessage', (/*peer, label, data*/) => {
             // window.console.log('WebRTC - Channel message');
         });
 
@@ -227,6 +225,12 @@ export default class VideoBox extends HTMLElement {
     }
     set signalingServer(value) {
         return this.setAttribute("signaling-server", value);
+    }
+    get useCanvas(){
+        return this.getAttribute("use-canvas") || false;
+    }
+    set useCanvas(value){
+        return this.setAttribute("use-canvas", value);
     }
     set src(value) {
         if(this.isURL(value)){

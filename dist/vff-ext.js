@@ -121,7 +121,6 @@ var VideoBox = function (_HTMLElement) {
 
             this.innerHTML = html;
             this.controllerPreview = false;
-            this.useCanvas = false;
 
             if (this.src && (this.controllerPreview || window.vff.mode !== 'controller-preview')) {
                 this.initStream(this.src);
@@ -302,11 +301,11 @@ var VideoBox = function (_HTMLElement) {
                 self.startReconnectionInterval();
                 window.console.log('WebRTC - Joined Room: ' + room);
             });
-            self.webrtc.on('createdPeer', function (peer) {
+            self.webrtc.on('createdPeer', function () /*peer*/{
                 // window.console.log('WebRTC - Peer Created');
             });
 
-            self.webrtc.on('channelMessage', function (peer, label, data) {
+            self.webrtc.on('channelMessage', function () /*peer, label, data*/{
                 // window.console.log('WebRTC - Channel message');
             });
 
@@ -371,6 +370,14 @@ var VideoBox = function (_HTMLElement) {
         },
         set: function set(value) {
             return this.setAttribute("signaling-server", value);
+        }
+    }, {
+        key: 'useCanvas',
+        get: function get() {
+            return this.getAttribute("use-canvas") || false;
+        },
+        set: function set(value) {
+            return this.setAttribute("use-canvas", value);
         }
     }], [{
         key: 'observedAttributes',
