@@ -111,6 +111,7 @@ var VideoBox = function (_HTMLElement) {
 
         _this._src = '';
         _this._reconnectInterval = 3000;
+        _this._shouldReconnect = false;
         return _this;
     }
 
@@ -243,9 +244,11 @@ var VideoBox = function (_HTMLElement) {
         value: function startReconnectionInterval() {
             var _this2 = this;
 
-            this._reconnectTimeout = setTimeout(function () {
-                _this2.reconnect();
-            }, this._reconnectInterval);
+            if (this._shouldReconnect) {
+                this._reconnectTimeout = setTimeout(function () {
+                    _this2.reconnect();
+                }, this._reconnectInterval);
+            }
         }
     }, {
         key: 'stopReconnectionInterval',
