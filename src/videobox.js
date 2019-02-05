@@ -5,6 +5,7 @@ export default class VideoBox extends HTMLElement {
         super();
         this._src = '';
         this._reconnectInterval = 3000;
+        this._shouldReconnect = false;
     }
 
     connectedCallback() {
@@ -134,7 +135,9 @@ export default class VideoBox extends HTMLElement {
         this.initStream(this.src);
     }
     startReconnectionInterval(){
-        this._reconnectTimeout = setTimeout(() => {this.reconnect();}, this._reconnectInterval);
+        if(this._shouldReconnect){
+            this._reconnectTimeout = setTimeout(() => {this.reconnect();}, this._reconnectInterval);
+        }
     }
     stopReconnectionInterval(){
         clearTimeout(this._reconnectTimeout);
