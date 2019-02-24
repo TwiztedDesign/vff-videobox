@@ -2,7 +2,7 @@
   "name": "vff-videobox",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/vff-ext.js",
   "scripts": {
     "test": "jest --coverage --no-cache",
     "test-watch": "jest --watchAll",
@@ -25,14 +25,14 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TwiztedDesign/vff-ext.git"
+    "url": "git+https://github.com/TwiztedDesign/vff-videobox.git"
   },
   "author": "Danny Umansky <dok.umansky@twizted-design.com> (http://www.twizted-design.com/)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/TwiztedDesign/vff-ext/issues"
+    "url": "https://github.com/TwiztedDesign/vff-videobox/issues"
   },
-  "homepage": "https://github.com/TwiztedDesign/vff-ext#readme",
+  "homepage": "https://github.com/TwiztedDesign/vff-videobox#readme",
   "devDependencies": {
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",

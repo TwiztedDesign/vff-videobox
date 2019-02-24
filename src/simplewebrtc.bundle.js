@@ -13701,7 +13701,7 @@ var cloneDeep = require('lodash.clonedeep');
         }
     }
 
-
+    config.sdpSemantics = 'plan-b';
     this.pc = new RTCPeerConnection(config, constraints);
 
     ///MLUpdate///
